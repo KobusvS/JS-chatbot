@@ -1,10 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
-document.querySelector("#input").addEventListener("keydown", function(e) {
-    if (e.keyCode == "Enter") {
-        console.log("Enter pressed");
-    }
-});
-});
+    const inputField = document.getElementById("input");
+    inputField.addEventListener("keydown", (e) => {
+      if (e.code === "Enter") {
+        let input = inputField.value;
+        inputField.value = "";
+        output(input);
+      }
+    });
+  });
 
 const inputField = document.getElementById("input")
 inputField.addEventListener("keydown", function(e) {
@@ -15,17 +18,25 @@ inputField.addEventListener("keydown", function(e) {
     }
 });
 
-function output()
-{
-      let text = input.toLowerCase().replace(/[^\w\s\d]/gi, "");    
-
-     text = text
-    .replace(/ a /g, " ")
-    .replace(/whats/g, "what is")
-    .replace(/please /g, "")
-    .replace(/ please/g, "");
-}
-
+function output(input) {
+    let product;
+    let text = input.toLowerCase().replace(/[^\w\s\d]/gi, "");
+    text = text
+      .replace(/ a /g, " ")
+      .replace(/whats/g, "what is")
+      .replace(/please /g, "")
+      .replace(/ please/g, "");
+   
+    if (compare(userInput, botResponses, text)) {
+      product = compare(userInput, botResponses, text);
+    } 
+    else {
+      product = unknownInput[Math.floor(Math.random() * unknownInput.length)];
+    }
+   
+    //update  DOM
+    addChatEntry (input, product);
+  }
 
 
 //User input into chatbot
@@ -67,35 +78,14 @@ function compare(userInputArray, botResponsesArray, string) {
     for (let i = 0; i < userInputArray.length; i++) {
     for (let j = 0; j < userInputArray[i].length; j++) {
         if (userInputArray[i] == string) {
-            let items = botResponsesArray[i];
-            item = items[Math.floor(Math.random() * items.length)];
+            let item = botResponsesArray[i];
+            item = item[Math.floor(Math.random() * items.length)];
 
         }
     }
 }
     return item;
 }
-
-function output(input) {
-    let product;
-    let text = input.toLowerCase().replace(/[^\w\s\d]/gi, "");
-    text = text
-      .replace(/ a /g, " ")
-      .replace(/whats/g, "what is")
-      .replace(/please /g, "")
-      .replace(/ please/g, "");
-   
-    if (compare(userInput, botResponses, text)) {
-      product = compare(userInput, botResponses, text);
-    } 
-    else {
-      product = unknownInput[Math.floor(Math.random() * unknownInput.length)];
-    }
-   
-    //update  DOM
-    addChatEntry (input, product);
-  }
-
 
 function addChatEntry(input, product) {
     const messageContainer = document.getElementById("messages");
@@ -111,7 +101,7 @@ function addChatEntry(input, product) {
     botDiv.className = "bot response";
     botDiv.innerText = "Typing...";
     botDiv.appendChild(botText);
-    messagesContainer.appendChild(botDiv);
+    messageContainer.appendChild(botDiv);
 
 setTimeout(() => {
     botText.innerText = `${product}`;
