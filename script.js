@@ -9,16 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-const inputField = document.getElementById("input")
-inputField.addEventListener("keydown", function(e) {
-    if (e.code == "Enter") {
-        let input = inputField.value;
-        inputField.value = "";
-        output(input);
-    }
-});
-
-function output(input) {
+  function output(input) {
     let product;
     let text = input.toLowerCase().replace(/[^\w\s\d]/gi, "");
     text = text
@@ -26,85 +17,69 @@ function output(input) {
       .replace(/whats/g, "what is")
       .replace(/please /g, "")
       .replace(/ please/g, "");
-   
-    if (compare(userInput, botResponses, text)) {
-      product = compare(userInput, botResponses, text);
+
+      
+    if (compare(prompts, replies, text)) {
+      product = compare(prompts, replies, text);
     } 
     else {
       product = unknownInput[Math.floor(Math.random() * unknownInput.length)];
     }
    
     //update  DOM
-    addChatEntry (input, product);
+    addChat(input, product);
   }
 
 
-//User input into chatbot
-const userInput = [
-    ["Hi", "Hello"], //0
-    ["How are you", "How are you doing"], //1
-    ["What is up","What are you doing"], //2
-    ["Are you human","who are you"], //3
-    [], //4     
-    [], //5     
-    [], //6
-    [], //7
-    [], //8
-    [] //9
-];
-
-//Bot answers to user input
-const botResponses = [
-    ["Hi there!","Hello"], //0
-    ["I'm good, how are you?", "Great thanks, and you?"], //1
-    ["Eagerly waiting to help you.","Standing by for support."], //2
-    ["No, I am a support bot here to help you.","I am ArcBot, at your service."], //3
-    [], //4
-    [], //5
-    [], //6
-    [], //7
-    [], //8
-    [] //9
-
-];
-
-//Unknown user inputs
-const unknownInput = [
-    "Please try again or try contacting support at support@infinityarc.net"
-];
-
-function compare(userInputArray, botResponsesArray, string) {
-    let item;
-    for (let i = 0; i < userInputArray.length; i++) {
-    for (let j = 0; j < userInputArray[i].length; j++) {
-        if (userInputArray[i] == string) {
-            let item = botResponsesArray[i];
-            item = item[Math.floor(Math.random() * items.length)];
-
+function compare(promptsArray, repliesArray, string) {
+    let reply;
+    for (let i = 0; i < promptsArray.length; i++) {
+    for (let j = 0; j < promptsArray[i].length; j++) {
+        if (promptsArray[i] === string) {
+            let replies = repliesArray[i];
+            reply = replies[Math.floor(Math.random() * replies.length)];
+          
+            }
         }
     }
-}
-    return item;
+    return reply;
 }
 
-function addChatEntry(input, product) {
-    const messageContainer = document.getElementById("messages");
-
+function addChat(input, product) {
+    const messagesContainer = document.getElementById("messages");
+    
     let userDiv = document.createElement("div");
     userDiv.id = "user";
     userDiv.className = "user response";
     userDiv.innerHTML = `${input}`;
-    messageContainer.appendChild(userDiv);
-
+    messagesContainer.appendChild(userDiv);
+   
     let botDiv = document.createElement("div");
+    let botText = document.createElement("span");
     botDiv.id = "bot";
     botDiv.className = "bot response";
-    botDiv.innerText = "Typing...";
+    botText.innerText = "Typing...";
     botDiv.appendChild(botText);
-    messageContainer.appendChild(botDiv);
+    messagesContainer.appendChild(botDiv);
+    // Keep messages at most recent
+  messagesContainer.scrollTop = messagesContainer.scrollHeight - messagesContainer.clientHeight;
+   
+    setTimeout(() => {
+      botText.innerText = `${product}`;
+    }, 2000
+    )
+ }
 
-setTimeout(() => {
-    botText.innerText = `${product}`;
-    }, 2000); 
-}
 
+
+
+
+
+// const inputField = document.getElementById("input")
+// inputField.addEventListener("keydown", function(e) {
+//     if (e.code == "Enter") {
+//         let input = inputField.value;
+//         inputField.value = "";
+//         output(input);
+//     }
+// });
